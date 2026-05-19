@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -126,7 +127,10 @@ class CctvViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getHistory(projectId: Long): Flow<List<ProgressHistoryEntity>> = repository.getHistoryForProject(projectId)
 
-    suspend fun getProjectById(id: Long): ProjectEntity? = repository.getProjectById(id)
+    // Perbaikan: Diubah jadi Flow agar UI bisa mendeteksi perubahannya
+    fun getProjectById(id: Long): Flow<ProjectEntity?> = flow {
+        emit(repository.getProjectById(id))
+    }
 
     fun toggleDarkMode(isDark: Boolean) = viewModelScope.launch { settingsDataStore.saveDarkMode(isDark) }
     fun setThemeColor(color: String) = viewModelScope.launch { settingsDataStore.saveThemeColor(color) }
@@ -143,5 +147,10 @@ class CctvViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun getCurrentFormattedDate(): String {
         return SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault()).format(Date())
+    }
+
+
+    fun updateProjectProgress(projectId: Long, currentStatus: String, notes: String, onSuccess: () -> Unit) {
+        updateProgress(projectId, currentStatus, notes, onSuccess)
     }
 }

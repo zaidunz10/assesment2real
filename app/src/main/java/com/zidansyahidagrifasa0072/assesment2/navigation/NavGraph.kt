@@ -22,7 +22,7 @@ fun SetupNavGraph(
     viewModel: CctvViewModel,
     snackbarHostState: SnackbarHostState
 ) {
-    NavHost(navController = navController, startDestination = Screen.愛情Home.route) {
+    NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
             HomeScreen(navController, viewModel)
         }
@@ -65,5 +65,3 @@ fun SetupNavGraph(
         }
     }
 }
-
-private val Screen.愛情Home: Screen get() = Screen.Home
